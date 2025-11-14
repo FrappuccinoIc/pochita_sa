@@ -7,6 +7,5 @@ urlpatterns = [
     path('perfil/<int:veterinario_id>/', views.perfil, name = "vet_perfil"),
     path('perfil/<int:veterinario_id>/edit/', views.edit, name = "vet_edit"),
     
-    path('horario/<int:veterinario_id>', views.horario, name = "vet_horario"),
-    path('horario/<int:veterinario_id>/edit/', views.horario_edit, name = "vet_horario_edit"),
+    path('perfil/<int:veterinario_id>/horario_edit/', views.horario_edit, name = "vet_horario_edit"),
 ]

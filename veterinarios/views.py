@@ -9,8 +9,5 @@ def perfil(req):
 def edit(req):
     return render(req, 'veterinarios/edit.html')
 
-def horario(req):
-    return render(req, 'veterinarios/horario.html')
-
 def horario_edit(req):
     return render(req, 'veterinarios/horario_edit.html')
