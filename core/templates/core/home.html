@@ -1,9 +1,49 @@
 {% extends 'core/base.html' %}
 
-{% block contenido %}
+{% block content %}
 
-<div class="container">
-    <h2>INICIO DE {{ NOMBRE_PAGINA }}</h2>
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Bienvenido a Pochita SA</h1>
+        <p class="col-md-8 fs-5">
+            Tu veterinaria de confianza.
+        </p>
+        <a href="/horarios/templates/horarios/base.html" class="btn btn-primary btn-lg">Ve nuestro horario de atencion</a>
+    </div>
+</div>
+
+<div class="row text-center mt-5">
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Fichas de Mascotas</h5>
+                <p class="card-text">Consulta y gestiona la información de cada mascota.</p>
+                <a href="/fichas/" class="btn btn-outline-primary">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Horarios</h5>
+                <p class="card-text">Revisa los horarios de atención y disponibilidad.</p>
+                <a href="/horarios/" class="btn btn-outline-primary">Ver horarios</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Veterinarios</h5>
+                <p class="card-text">Conoce a nuestro equipo profesional.</p>
+                <a href="/veterinarios/" class="btn btn-outline-primary">Conocer equipo</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
