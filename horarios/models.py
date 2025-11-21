@@ -1,6 +1,6 @@
 from django.db import models
-from ..veterinarios.models import Veterinario
-from ..fichas_mascota.models import FichaMascota
+from veterinarios.models import Veterinario
+from fichas_mascota.models import FichaMascota
 
 ESTADOS_DE_CITA = [
     ("pendiente", "Pendiente"),
@@ -10,8 +10,8 @@ ESTADOS_DE_CITA = [
 
 class Cita(models.Model):
     fecha = models.DateField(verbose_name="Fecha agendada")
-    hora_inicial = models.IntegerField(max_length=2, verbose_name="Bloque inicial de cita")
-    hora_final = models.IntegerField(max_length=2, verbose_name="Bloque final de cita")
+    hora_inicial = models.IntegerField(verbose_name="Bloque inicial de cita")
+    hora_final = models.IntegerField(verbose_name="Bloque final de cita")
     estado = models.CharField(choices=ESTADOS_DE_CITA, verbose_name="Estado")
 
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE, verbose_name="Veterinario asignado")
