@@ -1,8 +1,8 @@
-pochita_sa/migrations/
-core/migrations/
-veterinarios/migrations/
-horarios/migrations/
-fichas_mascota/migrations/
+pochita_sa/migrations/__pycache__/
+core/migrations/__pycache__/
+veterinarios/migrations/__pycache__/
+horarios/migrations/__pycache__/
+fichas_mascota/migrations/__pycache__/
 pochita_sa/__pycache__/
 core/__pycache__/
 veterinarios/__pycache__/
