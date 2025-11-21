@@ -7,4 +7,4 @@ class FichaMascotaAdmin(admin.ModelAdmin):
     ordering=('created', 'mascota')
     search_fields=('mascota', 'cliente', 'especie', 'telefono')
 
-admin.register(FichaMascota, FichaMascotaAdmin)
+admin.site.register(FichaMascota, FichaMascotaAdmin)
