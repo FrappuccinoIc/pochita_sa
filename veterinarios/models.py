@@ -10,7 +10,7 @@ class Veterinario(models.Model):
 
     def __str__(self): return self.nombre
 
-class Horarios(models.Model):
+class Horario(models.Model):
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE, verbose_name="Veterinario")
 
     # Horarios son listas de booleanos de los bloques de horario del día. Cada bloque es de 30 mins por 8 horas.
@@ -23,4 +23,5 @@ class Horarios(models.Model):
     domingo = ArrayField(models.BooleanField(default=False), size=16)
 
     updated = models.DateTimeField(auto_now=True, verbose_name="Última vez actualizado")
+    
     def __str__(self): return f"Horario de Veterinario {self.veterinario}"
