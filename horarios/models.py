@@ -12,7 +12,7 @@ class Cita(models.Model):
     fecha = models.DateField(verbose_name="Fecha agendada")
     hora_inicial = models.IntegerField(verbose_name="Bloque inicial de cita")
     hora_final = models.IntegerField(verbose_name="Bloque final de cita")
-    estado = models.CharField(choices=ESTADOS_DE_CITA, verbose_name="Estado")
+    estado = models.CharField(max_length=9, choices=ESTADOS_DE_CITA, verbose_name="Estado")
 
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE, verbose_name="Veterinario asignado")
     ficha_cliente = models.ForeignKey(FichaMascota, on_delete=models.CASCADE, verbose_name="Ficha Cliente")
