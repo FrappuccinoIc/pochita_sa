@@ -30,10 +30,13 @@ def horarios(req):
     if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__id = veterinario).order_by('fecha')
     else: citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado).order_by('fecha')
 
+    citas_canceladas = Cita.objects.filter(estado = "cancelado")
+
     veterinarios = Veterinario.objects.all().order_by('id')
 
     return render(req, 'horarios/horario.html', {
         'citas': citas,
+        "citas_canceladas": citas_canceladas,
         'fecha_min': date(fecha.year, fecha.month, 1),
         'fecha_max': fecha_max,
         'veterinarios': veterinarios
