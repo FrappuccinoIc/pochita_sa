@@ -4,16 +4,24 @@
 
 <div class="container">
 
+    <a class="" href="/horarios/citas/registrar"><div class="row text-center mb-3 x-5">
+        <button class="btn btn-info btn-lg btn-block">Crear cita</button>
+    </div></a>
+
     <div class="container">
-        <form class="form-control text-center">
+        <form class="form-control text-center" method="get" action="">
             <label for="fecha">Fecha:</label>
             <input type="date" id="fecha" name="fecha"
                 min="{{fecha_min.year}}-{{fecha_min.month}}-1"
                 max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
             >
 
-            <label for="veterinario">Veterinario:</label>
-            <input type="search" id="veterinario" name="veterinario">
+            <select name="veterinario" id="veterinario">
+                <option value="">Escoge Veterinario</option>
+                {% for vet in veterinarios %}
+                    <option value="{{ vet }}">{{ vet }}</option>
+                {% endfor %}
+            </select>
 
             <label for="pendiente">Pendiente</label>
             <input type="radio" id="pendiente" name="estado" value="pendiente" checked>
@@ -42,11 +50,11 @@
     <tbody>
         {% for cita in citas %}
         <tr>
-            <th scope="row">1</th>
+            <th scope="row"></th>
             <td>{{ cita.ficha_cliente.cliente }}</td>
             <td>{{ cita.veterinario.nombre }}</td>
             <td>{{ cita.fecha }}</td>
-            <td>{{ cita.hora_inicial }} - {{ cita.hora_final }}</td>
+            <td>{{ cita.hora_inicial_a_tiempo }} - {{ cita.hora_final_a_tiempo }}</td>
             <td>{{ cita.estado }}</td>
         </tr>
         {% endfor %}

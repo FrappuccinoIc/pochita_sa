@@ -27,11 +27,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_jsonform',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'core',
     'veterinarios',
     'horarios',
     'fichas_mascota',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
