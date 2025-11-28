@@ -1,0 +1,47 @@
+{% extends 'fichas_mascota/base.html' %}
+{% block content %}
+
+<h2 class="mb-4">Fichas registradas</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered text-center align-middle">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Mascota</th>
+                <th>Especie</th>
+                <th>Edad</th>
+                <th>Peso</th>
+                <th>Vacunas</th>
+                <th>Tratamiento apli</th>
+                <th>Tratamiento sig</th>
+                <th>telefono</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for m in mascotas %}
+            <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.cliente }}</td>
+                <td>{{ m.mascota }}</td>
+                <td>{{ m.especie }}</td>
+                <td>{{ m.edad }}</td>
+                <td>{{ m.peso }}</td>
+                <td>{{ m.vacunas }}</td>
+                <td>{{ m.tratamientos_apli }}</td>
+                <td>{{ m.tratamientos_sig }}</td>
+                <td>{{ m.telefono }}</td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-muted">No hay fichas registradas aún.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
