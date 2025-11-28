@@ -1,7 +1,14 @@
 from django import forms
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
+import calendar
 from .models import Cita
- 
+from django.utils.timezone import localtime
+
+fecha_hoy = localtime().date()
+fecha_max = fecha_hoy + relativedelta(months=1)
+fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
+
 def block_choices():
     inicio_horario = datetime(2020, 1, 1, 8, 0, 0, 0)
     resultado = []
@@ -20,7 +27,10 @@ class CitaForm(forms.ModelForm):
         fields = "__all__"
 
         widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date'}),
+            'fecha': forms.DateInput(attrs={'type': 'date',
+                                            'min': fecha_hoy,
+                                            'max': fecha_max}),
+            
             'hora_inicial': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
             'hora_final': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
         }
