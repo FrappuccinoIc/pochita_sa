@@ -21,8 +21,8 @@ class Cita(models.Model):
     updated = models.DateTimeField(auto_now=True, verbose_name="Última vez actualizado")
 
     def bloques_a_tiempo(self, bloque):
-        una_fecha = datetime(self.fecha.year, self.fecha.month, self.fecha.day, 8, 0, 0, 0)
-        result = una_fecha + timedelta(minutes=(bloque - 1) * 30)
+        inicio_horario = datetime(self.fecha.year, self.fecha.month, self.fecha.day, 8, 0, 0, 0)
+        result = inicio_horario + timedelta(minutes=(bloque - 1) * 30)
         return result.strftime('%H:%M')
 
     @property
