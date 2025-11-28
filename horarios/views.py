@@ -25,7 +25,7 @@ def horarios(req):
     fecha_max = fecha + relativedelta(months=1)
     fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
 
-    if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__nombre__icontains = veterinario).order_by('fecha')
+    if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__id = veterinario).order_by('fecha')
     else: citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado).order_by('fecha')
 
     veterinarios = Veterinario.objects.all().order_by('id')

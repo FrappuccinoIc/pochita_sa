@@ -19,7 +19,7 @@
             <select name="veterinario" id="veterinario">
                 <option value="">Todos</option>
                 {% for vet in veterinarios %}
-                    <option value="{{ vet }}">{{ vet }}</option>
+                    <option value="{{ vet.id }}">{{ vet.nombre }}</option>
                 {% endfor %}
             </select>
 
