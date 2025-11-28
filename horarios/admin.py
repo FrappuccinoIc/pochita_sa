@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Cita
 
 class CitaAdmin(admin.ModelAdmin):
-    readonly_fields=('ficha_cliente','updated')
+    #readonly_fields=('ficha_cliente','updated')
     list_display=('get_nombre_cliente', 'get_nombre_veterinario', 'fecha')
     ordering=('fecha', 'hora_inicial', 'estado')
     search_fields=('get_nombre_cliente', 'get_nombre_veterinario')

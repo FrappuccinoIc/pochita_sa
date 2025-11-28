@@ -7,10 +7,9 @@ class VeterinarioAdmin(admin.ModelAdmin):
     search_fields=('nombre', '')
 
 class HorarioAdmin(admin.ModelAdmin):
-    readonly_fields=('updated', 'veterinario')
     list_display=('veterinario', 'updated')
-    ordering=('updated', 'veterinario')
-    search_fields=('veterinario', '')
+    """ ordering=('updated', 'veterinario')
+    search_fields=('veterinario', '') """
 
 admin.site.register(Veterinario, VeterinarioAdmin)
 admin.site.register(Horario, HorarioAdmin)
