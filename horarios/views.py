@@ -23,9 +23,11 @@ def horarios(req):
         for i in range(3):
             lista_fecha[i] = int(lista_fecha[i])
         fecha = date(lista_fecha[0], lista_fecha[1], lista_fecha[2])
-    except: fecha = date(fecha.year, fecha.month, 1)
-    fecha_max = fecha + relativedelta(months=1)
-    fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
+        fecha_max = fecha
+    except: 
+        fecha = date(fecha.year, fecha.month, 1)
+        fecha_max = fecha + relativedelta(months=1)
+        fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
 
     if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__id = veterinario).order_by('fecha')
     else: citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado).order_by('fecha')
@@ -37,7 +39,7 @@ def horarios(req):
     return render(req, 'horarios/horario.html', {
         'citas': citas,
         "citas_canceladas": citas_canceladas,
-        'fecha_min': date(fecha.year, fecha.month, 1),
+        'fecha_min': date(2020, 1, 1),
         'fecha_max': fecha_max,
         'veterinarios': veterinarios
     })
