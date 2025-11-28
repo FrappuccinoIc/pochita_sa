@@ -2,4 +2,57 @@
 
 {% block content %}
 
+<div class="container">
+
+    <div class="container">
+        <form class="form-control text-center">
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha"
+                min="{{fecha_min.year}}-{{fecha_min.month}}-1"
+                max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
+            >
+
+            <label for="veterinario">Veterinario:</label>
+            <input type="search" id="veterinario" name="veterinario">
+
+            <label for="pendiente">Pendiente</label>
+            <input type="radio" id="pendiente" name="estado" value="pendiente" checked>
+
+            <label for="realizado">Realizado</label>
+            <input type="radio" id="realizado" name="estado" value="realizado">
+
+            <label for="cancelado">Cancelado</label>
+            <input type="radio" id="cancelado" name="estado" value="cancelado">
+
+            <button class="btn btn-primary">Ir</button>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Veterinario</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Estado</th>
+            </tr>
+        </thead>
+    <tbody>
+        {% for cita in citas %}
+        <tr>
+            <th scope="row">1</th>
+            <td>{{ cita.ficha_cliente.cliente }}</td>
+            <td>{{ cita.veterinario.nombre }}</td>
+            <td>{{ cita.fecha }}</td>
+            <td>{{ cita.hora_inicial }} - {{ cita.hora_final }}</td>
+            <td>{{ cita.estado }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+
+
 {% endblock %}
