@@ -9,7 +9,7 @@ from .models import Cita
 from veterinarios.models import Veterinario
 
 def horarios(req):
-    veterinario = req.GET.get('veterinario', None).strip()
+    veterinario = req.GET.get('veterinario', None)
 
     estado = req.GET.get('estado', None)
     lista_estados = ["realizado", "pendiente", "cancelado"]
