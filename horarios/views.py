@@ -99,7 +99,12 @@ def registrar_cita(req):
     if req.method == "POST":
         cita_form = CitaForm(data = req.POST)
         if cita_form.is_valid():
-            cita_form.save()
+            cita = cita_form.save()
+            if cita.estado == "cancelado":
+                for recepcionista in Recepcionista.objects.all():
+                    nueva_notificacion = Notificacion.objects.create(recepcionista = recepcionista, cita = cita, chequeado = False)
+                    nueva_notificacion.save()
+                print(f"Guardada notificación para {cita}")
             return redirect(reverse('registrar_cita') + '?ok')
 
     return render(req, 'horarios/crear_cita.html', {"form": cita_form})
