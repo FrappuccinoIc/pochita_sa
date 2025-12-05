@@ -56,7 +56,7 @@
                 <td>{{ cita.veterinario.nombre }}</td>
                 <td>{{ cita.ficha_cliente.mascota }}</td>
                 <td>{{ cita.fecha }}</td>
-                <td>{{ cita.hora_inicial_a_tiempo }} - {{ cita.hora_final_a_tiempo }}</td>
+                <td>{{ cita.hora_inicial_a_tiempo }}</td>
                 <td>{{ cita.estado }}</td>
                 <td>
                     {% if vet_loggeado.id == cita.veterinario.id and cita.estado == "pendiente" %}

@@ -32,7 +32,6 @@ class CitaForm(forms.ModelForm):
     )
 
     hora_inicial = forms.ChoiceField(choices=block_choices())
-    hora_final = forms.ChoiceField(choices=block_choices())
 
     class Meta:
         model = Cita
