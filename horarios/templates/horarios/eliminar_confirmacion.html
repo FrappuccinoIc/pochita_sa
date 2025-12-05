@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h4 class="mb-3">Eliminar cita</h4>
+        <p>¿Seguro que deseas eliminar esta cita?</p>
+
+        <ul>
+            <li><strong>Cliente:</strong> {{ cita.ficha_cliente.cliente }}</li>
+            <li><strong>Mascota:</strong> {{ cita.ficha_cliente.mascota }}</li>
+            <li><strong>Fecha:</strong> {{ cita.fecha }} {{ cita.hora_inicial_a_tiempo }}</li>
+        </ul>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button class="btn btn-danger">Eliminar</button>
+            <a href="{% url 'horarios' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
