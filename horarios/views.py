@@ -108,6 +108,7 @@ def registrar_cita(req):
 def vet_disponibilidad(req):
     return render(req, 'horarios/horarios.html')
 
+@login_required
 def eliminar_cita(req, cita_id):
     cita = get_object_or_404(Cita, id=cita_id)
     if req.user.id != cita.veterinario.usuario.id or cita.estado == "cancelado": return redirect("restringido")
@@ -123,3 +124,12 @@ def eliminar_cita(req, cita_id):
 
 def restringido(req):
     return render(req, 'horarios/restringido.html')
+
+@login_required
+def vet_confirmar(req):
+    veterinarios = Veterinario.objects.all().order_by('id')
+    if req.method == "POST":
+        vet_id = req.GET.get("veterinario")
+        vet = get_object_or_404(Veterinario, id= vet_id)
+        return redirect(reverse("registrar_cita", f'?vet={vet.id}'))
+    return render(req, 'horarios/vet_confirmar.html', {"veterinarios": veterinarios})

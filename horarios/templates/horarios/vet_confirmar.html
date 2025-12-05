@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class="col-4">
+    <h2>Escoge el veterinario:</h2>
+    <form action="{% url 'vet_confirmar' %}" method="GET">
+        <select name="veterinario" id="veterinario">
+            <option value="">Todos</option>
+            {% for vet in veterinarios %}
+            <option value="{{ vet.id }}">{{ vet.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary">Confirmar</button>
+        <a href="{% url 'horarios' %}" class="btn btn-secondary">Volver atrás</a>
+    </form>
+</div>
+
+{% endblock %}
