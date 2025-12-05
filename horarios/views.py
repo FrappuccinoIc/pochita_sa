@@ -1,3 +1,4 @@
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -60,3 +61,12 @@ def registrar_cita(req):
 @login_required
 def vet_disponibilidad(req):
     return render(req, 'horarios/horarios.html')
+
+def eliminar_cita(req, cita_id):
+    cita = get_object_or_404(Cita, id=cita_id)
+
+    if req.method == "POST":
+        cita.delete()
+        return redirect('horarios')
+
+    return render(req, 'horarios/eliminar_confirmacion.html', {'cita': cita})
