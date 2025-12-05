@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import CitaForm
 from django.utils.timezone import localtime
@@ -9,6 +11,7 @@ import calendar
 from .models import Cita
 from veterinarios.models import Veterinario
 
+@login_required
 def horarios(req):
     veterinario = req.GET.get('veterinario')
     if veterinario:
@@ -46,6 +49,7 @@ def horarios(req):
         'veterinarios': veterinarios
     })
 
+@login_required
 def registrar_cita(req):
     cita_form = CitaForm()
     if req.method == "POST":
@@ -56,6 +60,7 @@ def registrar_cita(req):
 
     return render(req, 'horarios/crear_cita.html', {"form": cita_form})
 
+@login_required
 def vet_disponibilidad(req):
     return render(req, 'horarios/horarios.html')
 

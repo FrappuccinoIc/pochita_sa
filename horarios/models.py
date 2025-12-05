@@ -1,6 +1,7 @@
 from django.db import models
 from veterinarios.models import Veterinario
 from fichas_mascota.models import FichaMascota
+from veterinarios.models import Recepcionista
 from datetime import timedelta, time, datetime
 
 ESTADOS_DE_CITA = [
@@ -34,3 +35,15 @@ class Cita(models.Model):
         return self.bloques_a_tiempo(self.hora_final)
 
     def __str__(self): return f"Cita para {self.fecha}"
+
+class Notificacion(models.Model):
+    recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE, verbose_name="Recepcionista")
+    cita = models.ForeignKey(Cita, on_delete=models.CASCADE, verbose_name="Cita cancelada")
+    chequeado = models.BooleanField(default = False, verbose_name = "Chequeado")
+
+    created = models.DateTimeField(auto_now = True, verbose_name = "Fecha de creación")
+    class Meta:
+        verbose_name = "Notificación"
+        verbose_name_plural = "Notificaciones"
+
+    def __str__(self): return f"Notificación de cita N°{self.cita}, para usuario N°{self.recepcionista}"
