@@ -3,6 +3,7 @@ from django.urls import reverse
 from .forms import CitaForm
 from django.utils.timezone import localtime
 from datetime import date
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import calendar
 from .models import Cita
@@ -18,17 +19,18 @@ def horarios(req):
     if estado not in lista_estados: estado = "pendiente"
 
     fecha = localtime().date()
-    try: 
-        lista_fecha = req.GET.get('fecha', None).split('-')
-        for i in range(3):
-            lista_fecha[i] = int(lista_fecha[i])
-        fecha = date(lista_fecha[0], lista_fecha[1], lista_fecha[2])
+    try:
+        fecha_str = req.GET.get('fecha', None)
+        fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
         fecha_max = fecha
-    except: 
+    except:
         fecha = date(fecha.year, fecha.month, 1)
         fecha_max = fecha + relativedelta(months=1)
-        fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
-
+        fecha_max = date(
+            fecha_max.year,
+            fecha_max.month,
+            calendar.monthrange(fecha_max.year, fecha_max.month)[1]
+        )
     if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__id = veterinario).order_by('fecha')
     else: citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado).order_by('fecha')
 

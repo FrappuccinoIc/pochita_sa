@@ -20,23 +20,20 @@ def block_choices():
 
 class CitaForm(forms.ModelForm):
 
+    fecha = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'dd/mm/aaaa',
+                'autocomplete': 'off'
+            }
+        )
+    )
+
     hora_inicial = forms.ChoiceField(choices=block_choices())
     hora_final = forms.ChoiceField(choices=block_choices())
 
     class Meta:
         model = Cita
         fields = "__all__"
-
-        widgets = {
-            'fecha': forms.DateInput(
-                format = "%d-%m-%Y",
-                attrs = {
-                    'type': 'date',
-                    'min': fecha_hoy,
-                    'max': fecha_max
-                }
-            ),
-            
-            'hora_inicial': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
-            'hora_final': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
-        }
