@@ -66,14 +66,22 @@
                 <td>{{ cita.fecha }}</td>
                 <td>{{ cita.hora_inicial_a_tiempo }} - {{ cita.hora_final_a_tiempo }}</td>
                 <td>{{ cita.estado }}</td>
-                {% if 'publicaciones.delete_publicacion' in perms %}
                 <td>
+                    {% if vet_loggeado.id == cita.veterinario.id and cita.estado == "pendiente" %}
                     <a href="{% url 'eliminar_cita' cita.id %}" 
                         class="btn btn-sm btn-danger">
-                        Eliminar
+                        Cancelar
                     </a>
+                    {% elif vet_loggeado.id == cita.veterinario.id %}
+                    <button class="btn btn-sm btn-dark" disabled>
+                        {{ cita.estado|capfirst }}
+                    </button>
+                    {% else %}
+                    <button class="btn btn-sm btn-secondary" disabled>
+                        Sin acción
+                    </button>
+                    {% endif %}
                 </td>
-                {% endif %}
             </tr>
             {% endfor %}
         </tbody>

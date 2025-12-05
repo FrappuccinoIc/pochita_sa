@@ -2,9 +2,11 @@
 
 {% block content %}
 
+{% if notificaciones.es_recepcionista %}
 <button class="btn btn-warning text-center mb-3">
-    <a class="nav-link" href="/horarios/?estado=cancelado">Notifs: {{ notificaciones }}</a>
+    <a class="nav-link" href="/horarios/?estado=cancelado">Notifs: {{ notificaciones.num }}</a>
 </button>
+{% endif %}
 
 <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
     <div class="container-fluid py-5">

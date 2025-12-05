@@ -40,13 +40,16 @@ def horarios(req):
     citas_canceladas = Cita.objects.filter(estado = "cancelado")
 
     veterinarios = Veterinario.objects.all().order_by('id')
+    try: vet_loggeado = Veterinario.objects.get(usuario__id = req.user.id)
+    except: vet_loggeado = None
 
     return render(req, 'horarios/horario.html', {
         'citas': citas,
         "citas_canceladas": citas_canceladas,
         'fecha_min': date(2020, 1, 1),
         'fecha_max': fecha_max,
-        'veterinarios': veterinarios
+        'veterinarios': veterinarios,
+        'vet_loggeado': vet_loggeado
     })
 
 @login_required
@@ -66,9 +69,15 @@ def vet_disponibilidad(req):
 
 def eliminar_cita(req, cita_id):
     cita = get_object_or_404(Cita, id=cita_id)
-
+    print(req.user.id, cita.veterinario.usuario.id)
+    if req.user.id != cita.veterinario.usuario.id or cita.estado == "cancelado": return redirect("restringido")
     if req.method == "POST":
-        cita.delete()
+        cita.estado = "cancelado"
+        cita.save()
+        print(cita.estado)
         return redirect('horarios')
 
     return render(req, 'horarios/eliminar_confirmacion.html', {'cita': cita})
+
+def restringido(req):
+    return render(req, 'horarios/restringido.html')
