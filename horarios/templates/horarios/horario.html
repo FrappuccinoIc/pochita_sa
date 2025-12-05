@@ -9,33 +9,38 @@
         <button class="btn btn-warning text-center col-1" ><a class="nav-link" href="/horarios/?estado=cancelado">Notifs: {{ citas_canceladas|length }}</a></button>
     </div>
 
-    <div class="container">
-        <form class="form-control text-center" method="get" action="">
-            <label for="fecha">Fecha:</label>
-            <input type="text" id="fecha" name="fecha" class="form-control" autocomplete="off" placeholder="dd/mm/aaaa"
-                min="{{fecha_min.year}}-{{fecha_min.month}}-1"
-                max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
-            >
+    <form class="form-control text-center" method="get" action="">
+        <div class="container row">
+            <div class="col-3">
+                <label for="fecha">Fecha:</label>
+                <input type="text" id="fecha" name="fecha" class="form-control" autocomplete="off" placeholder="dd/mm/aaaa"
+                    min="{{fecha_min.year}}-{{fecha_min.month}}-1"
+                    max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
+                >
+            </div>
+            <div class="col-4">
+                <select name="veterinario" id="veterinario">
+                    <option value="">Todos</option>
+                    {% for vet in veterinarios %}
+                        <option value="{{ vet.id }}">{{ vet.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <select name="veterinario" id="veterinario">
-                <option value="">Todos</option>
-                {% for vet in veterinarios %}
-                    <option value="{{ vet.id }}">{{ vet.nombre }}</option>
-                {% endfor %}
-            </select>
+            <div class="col-4">
+                <label for="pendiente">Pendiente</label>
+                <input type="radio" id="pendiente" name="estado" value="pendiente" checked>
+    
+                <label for="realizado">Realizado</label>
+                <input type="radio" id="realizado" name="estado" value="realizado">
+    
+                <label for="cancelado">Cancelado</label>
+                <input type="radio" id="cancelado" name="estado" value="cancelado">
+            </div>
 
-            <label for="pendiente">Pendiente</label>
-            <input type="radio" id="pendiente" name="estado" value="pendiente" checked>
-
-            <label for="realizado">Realizado</label>
-            <input type="radio" id="realizado" name="estado" value="realizado">
-
-            <label for="cancelado">Cancelado</label>
-            <input type="radio" id="cancelado" name="estado" value="cancelado">
-
-            <button class="btn btn-primary">Ir</button>
-        </form>
-    </div>
+            <button class="btn btn-primary col-1">Ir</button>
+        </div>
+    </form>
 
     <table class="table">
         <thead>
@@ -61,12 +66,14 @@
                 <td>{{ cita.fecha }}</td>
                 <td>{{ cita.hora_inicial_a_tiempo }} - {{ cita.hora_final_a_tiempo }}</td>
                 <td>{{ cita.estado }}</td>
+                {% if 'publicaciones.delete_publicacion' in perms %}
                 <td>
                     <a href="{% url 'eliminar_cita' cita.id %}" 
                         class="btn btn-sm btn-danger">
                         Eliminar
                     </a>
                 </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
