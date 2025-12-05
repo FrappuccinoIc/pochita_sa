@@ -3,6 +3,14 @@ from django.contrib.auth.models import User
 from django_jsonform.models.fields import ArrayField
 from django_jsonform.models.fields import JSONField
 
+class Recepcionista(models.Model):
+    nombre = models.CharField(max_length=120, verbose_name="Nombre de Recepcionista")
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Cuenta de usuario")
+
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de registro")
+
+    def __str__(self): return self.nombre
+
 class Veterinario(models.Model):
     nombre = models.CharField(max_length=120, verbose_name="Nombre de Veterinario")
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Cuenta de usuario")

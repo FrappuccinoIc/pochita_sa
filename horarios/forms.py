@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 import calendar
 from .models import Cita
 from django.utils.timezone import localtime
+from django.conf import settings
 
 fecha_hoy = localtime().date()
 fecha_max = fecha_hoy + relativedelta(months=1)
@@ -27,9 +28,14 @@ class CitaForm(forms.ModelForm):
         fields = "__all__"
 
         widgets = {
-            'fecha': forms.DateInput(attrs={'type': 'date',
-                                            'min': fecha_hoy,
-                                            'max': fecha_max}),
+            'fecha': forms.DateInput(
+                format = "%d-%m-%Y",
+                attrs = {
+                    'type': 'date',
+                    'min': fecha_hoy,
+                    'max': fecha_max
+                }
+            ),
             
             'hora_inicial': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
             'hora_final': forms.NumberInput(attrs={'type': 'number', 'min': 1, 'max': 16}),
