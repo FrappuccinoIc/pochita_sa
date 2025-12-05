@@ -37,3 +37,4 @@ class NotificacionAdmin(admin.ModelAdmin):
     get_cita_mascota.short_description = 'Mascota'
 
 admin.site.register(Cita, CitaAdmin)
+admin.site.register(Notificacion, NotificacionAdmin)

@@ -5,7 +5,6 @@
 <div class="container">
 
     <div class="row text-center mb-3 x-5">
-        <button class="btn btn-info btn-lg btn-block col-10 mx-2"><a class="" href="/horarios/citas/registrar">Crear cita</a></button>
         {% if notificaciones.es_recepcionista %}
         <button class="btn btn-warning text-center col-1">
             <a class="nav-link" href="/horarios/notificaciones">Notifs: {{ notificaciones.num }}</a>
@@ -29,17 +28,6 @@
                         <option value="{{ vet.id }}">{{ vet.nombre }}</option>
                     {% endfor %}
                 </select>
-            </div>
-
-            <div class="col-4">
-                <label for="pendiente">Pendiente</label>
-                <input type="radio" id="pendiente" name="estado" value="pendiente" checked>
-    
-                <label for="realizado">Realizado</label>
-                <input type="radio" id="realizado" name="estado" value="realizado">
-    
-                <label for="cancelado">Cancelado</label>
-                <input type="radio" id="cancelado" name="estado" value="cancelado">
             </div>
 
             <button class="btn btn-primary col-1">Ir</button>
