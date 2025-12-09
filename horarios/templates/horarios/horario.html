@@ -116,7 +116,7 @@ $(function() {
         format: 'dd/mm/yyyy',
         language: 'es',
         autoclose: true,
-        startDate: new Date(), 
+        startDate: "{{ fecha_first|date:'d/m/Y' }}", 
         endDate: "{{ fecha_max|date:'d/m/Y' }}"
     });
 });

@@ -16,7 +16,14 @@
         <div class="container row">
             <div class="col-3">
                 <label for="fecha">Fecha:</label>
-                <input type="text" id="fecha" name="fecha" class="form-control" autocomplete="off" placeholder="dd/mm/aaaa"
+                <input type="text" readonly name="fecha-min" class="form-control fecha-input" autocomplete="off" placeholder="dd/mm/aaaa"
+                    min="{{fecha_min.year}}-{{fecha_min.month}}-1"
+                    max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
+                >
+            </div>
+            <div class="col-3">
+                <label for="fecha">Fecha:</label>
+                <input type="text" readonly name="fecha-max" class="form-control fecha-input" autocomplete="off" placeholder="dd/mm/aaaa"
                     min="{{fecha_min.year}}-{{fecha_min.month}}-1"
                     max="{{fecha_max.year}}-{{fecha_max.month}}-{{fecha_max.day}}"
                 >
@@ -93,10 +100,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/boot
 
 <script>
 $(function() {
-    $('#fecha').datepicker({
+    $('.fecha-input').datepicker({
         format: 'dd/mm/yyyy',
         language: 'es',
-        autoclose: true
+        autoclose: true,
+        startDate: "{{ fecha_first|date:'d/m/Y' }}", 
+        endDate: "{{ fecha_max|date:'d/m/Y' }}"
     });
 });
 </script>
