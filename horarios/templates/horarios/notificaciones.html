@@ -51,7 +51,6 @@
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Estado</th>
-                <th>Acciones</th>
             </tr>
         </thead>
 
@@ -65,15 +64,6 @@
                 <td>{{ cita.fecha }}</td>
                 <td>{{ cita.hora_inicial_a_tiempo }}</td>
                 <td>{{ cita.estado }}</td>
-                <td>
-                    {% if notif.chequeado %}
-                    <a href="{% url 'eliminar_cita' cita.id %}">
-                        <button class="btn btn-sm btn-warning">Reconocer</button>
-                    </a>
-                    {% else %}
-                    <button class="btn btn-sm btn-secondary" disabled>Sin acción</button>
-                    {% endif %}
-                </td>
             </tr>
             {% endfor %}
         </tbody>
