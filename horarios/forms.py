@@ -7,6 +7,14 @@ from .models import Cita
 from django.utils.timezone import localtime
 from django.conf import settings
 
+def block_choices():
+    inicio_horario = datetime(2020, 1, 1, 8, 0, 0, 0)
+    resultado = []
+    for i in range(16):
+        hora = (inicio_horario + timedelta(minutes=30*i)).strftime("%H:%M")
+        resultado.append((i+1, hora))
+    return resultado
+
 class CitaForm(forms.ModelForm):
     fecha = forms.DateField(
         input_formats=['%d/%m/%Y'],
@@ -26,7 +34,7 @@ class CitaForm(forms.ModelForm):
     )
 
     hora_inicial = forms.ChoiceField(
-        choices=[(None, "Selecciona veterinario y fecha")], # <option value="1">08:00</option>
+        choices=[(None, "Selecciona veterinario y fecha")] + block_choices(), # <option value="1">08:00</option>
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 

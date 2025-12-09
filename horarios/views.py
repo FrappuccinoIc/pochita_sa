@@ -123,7 +123,6 @@ def registrar_cita(req):
     
     if req.method == "POST":
         cita_form = CitaForm(data=req.POST)
-        print(cita_form.cleaned_data['hora_inicial'], type(cita_form.cleaned_data['hora_inicial']))
         if cita_form.is_valid():
 
             # Crear la cita manualmente
@@ -132,7 +131,7 @@ def registrar_cita(req):
                 hora_inicial=int(cita_form.cleaned_data['hora_inicial']),
                 veterinario=cita_form.cleaned_data["veterinario"],
                 ficha_cliente=cita_form.cleaned_data["ficha_cliente"],
-                estado="pendiente"
+                estado=cita_form.cleaned_data["estado"]
             )
 
             # Notificaciones por si cancelan
@@ -166,7 +165,6 @@ def filtrar_horas(req):
     tiene_horario = False
     for bloque_activo in horario_dia.values():
         if i == 16: break
-        print(i, bloque_activo)
         if bloque_activo:
             tiene_horario = True
             html += f"<option value='{i}'>{convertir_bloque_a_hora(i)}</option>"

@@ -73,6 +73,11 @@ $(function() {
         const event = new Event('change', { bubbles: true });
         this.dispatchEvent(event);
     });
+
+    $selectHora.find('option').each(function() {
+        const val = $(this).val();
+        $(this).addClass('d-none'); // hide it
+    });
 });
 </script>
 
