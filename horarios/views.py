@@ -159,18 +159,19 @@ def filtrar_horas(req):
     dias = ['lunes', 'martes', 'miercoles', 'jueves','viernes', 'sabado','domingo']
     try:
         horario = Horario.objects.get(veterinario__id = veterinario_id)
-
-        horario_dia = getattr(horario, dias[fecha.weekday()])
-        i = 1
-        for bloque_activo in horario_dia.values():
-            if i == 16: break
-            print(i, bloque_activo)
-            if bloque_activo:
-                html += f"<option value='{i}'>{convertir_bloque_a_hora(i)}</option>"
-            i += 1
-        print(html)
     except:
-        pass
+        return HttpResponse("<option value="">No hay horario disponible</option>")
+    horario_dia = getattr(horario, dias[fecha.weekday()])
+    i = 1
+    tiene_horario = False
+    for bloque_activo in horario_dia.values():
+        if i == 16: break
+        print(i, bloque_activo)
+        if bloque_activo:
+            tiene_horario = True
+            html += f"<option value='{i}'>{convertir_bloque_a_hora(i)}</option>"
+        i += 1
+    if not tiene_horario: return HttpResponse("<option value="">No hay horario disponible</option>")
     return HttpResponse(html)
 
 @login_required

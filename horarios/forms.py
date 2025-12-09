@@ -7,18 +7,6 @@ from .models import Cita
 from django.utils.timezone import localtime
 from django.conf import settings
 
-fecha_hoy = localtime().date()
-fecha_max = fecha_hoy + relativedelta(months=1)
-fecha_max = date(fecha_max.year, fecha_max.month, calendar.monthrange(fecha_max.year, fecha_max.month)[1])
-
-""" def block_choices():
-    inicio_horario = datetime(2020, 1, 1, 8, 0, 0, 0)
-    resultado = []
-    for i in range(16):
-        hora = (inicio_horario + timedelta(minutes=30*i)).strftime("%H:%M")
-        resultado.append((i+1, hora)) # <option value="1">08:00</option>
-    return resultado """
-
 class CitaForm(forms.ModelForm):
     fecha = forms.DateField(
         input_formats=['%d/%m/%Y'],

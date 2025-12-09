@@ -12,7 +12,7 @@
             </h3>
         {% endif %}
 
-        <form action="" method="post">
+        <form action="" method="post" hx-boost="true">
             {% csrf_token %}
             {{ form|crispy }}
 
@@ -67,6 +67,11 @@ $(function() {
         autoclose: true,
         todayHighlight: true,
         startDate: new Date()
+    });
+
+    $fecha.on('changeDate', function() {
+        const event = new Event('change', { bubbles: true });
+        this.dispatchEvent(event);
     });
 });
 </script>
