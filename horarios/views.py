@@ -20,38 +20,62 @@ def horarios(req):
 
     estado = req.GET.get('estado', None)
     lista_estados = ["realizado", "pendiente", "cancelado"]
-    if estado not in lista_estados: estado = "pendiente"
+    if estado not in lista_estados:
+        estado = "pendiente"
 
-    fecha = localtime().date()
+    hoy = localtime().date()
+
+    # Restricción de fecha
     try:
         fecha_str = req.GET.get('fecha', None)
         fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
-        fecha_max = fecha
+
+        # Aquí se aplica la restricción
+        if fecha < hoy:
+            fecha = hoy
+
     except:
-        fecha = date(fecha.year, fecha.month, 1)
-        fecha_max = fecha + relativedelta(months=1)
-        fecha_max = date(
-            fecha_max.year,
-            fecha_max.month,
-            calendar.monthrange(fecha_max.year, fecha_max.month)[1]
-        )
-    if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado, veterinario__id = veterinario).order_by('fecha')
-    else: citas = Cita.objects.filter(fecha__range = (fecha, fecha_max), estado = estado).order_by('fecha')
+        fecha = date(hoy.year, hoy.month, 1)
+
+    # Límite superior: último día del mes siguiente
+    fecha_max = fecha + relativedelta(months=1)
+    fecha_max = date(
+        fecha_max.year,
+        fecha_max.month,
+        calendar.monthrange(fecha_max.year, fecha_max.month)[1]
+    )
+
+    # Filtro
+    if veterinario:
+        citas = Cita.objects.filter(
+            fecha__range=(fecha, fecha_max),
+            estado=estado,
+            veterinario__id=veterinario
+        ).order_by('fecha')
+    else:
+        citas = Cita.objects.filter(
+            fecha__range=(fecha, fecha_max),
+            estado=estado
+        ).order_by('fecha')
 
     veterinarios = Veterinario.objects.all().order_by('id')
-    try: vet_loggeado = Veterinario.objects.get(usuario__id = req.user.id)
-    except: vet_loggeado = None
+
+    try:
+        vet_loggeado = Veterinario.objects.get(usuario__id=req.user.id)
+    except:
+        vet_loggeado = None
 
     notificaciones = get_notificaciones(req)
 
     return render(req, 'horarios/horario.html', {
         'citas': citas,
-        'fecha_min': date(2020, 1, 1),
+        'fecha_min': hoy,   # Establece limite de fecha, hoy
         'fecha_max': fecha_max,
         'veterinarios': veterinarios,
         'vet_loggeado': vet_loggeado,
         'notificaciones': notificaciones
     })
+
 
 @permission_required('horarios.view_notificacion', login_url="/horarios/restringido")
 def ver_notificaciones(req):
