@@ -17,8 +17,8 @@ def block_choices():
         hora = (inicio_horario + timedelta(minutes=30*i)).strftime("%H:%M")
         resultado.append((i+1, hora))
     return resultado
-class CitaForm(forms.ModelForm):
 
+class CitaForm(forms.ModelForm):
     fecha = forms.DateField(
         input_formats=['%d/%m/%Y'],
         widget=forms.TextInput(
@@ -30,22 +30,15 @@ class CitaForm(forms.ModelForm):
         )
     )
 
-    hora_inicial = forms.ChoiceField(choices=block_choices())
-
-    """ def __init__(self, vet=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.vet = vet
-
-        if vet is not None:
-            # This is just an example — replace with your vet's real unavailable hours
-            
-
-            # Filter the choices for hora_inicial
-            self.fields['hora_inicial'].choices = [
-                c for c in self.fields['hora_inicial'].choices
-                if c[0] not in unavailable
-            ] """
+    hora_inicial = forms.ChoiceField(
+        choices=block_choices(),
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
 
     class Meta:
         model = Cita
         fields = "__all__"
+        widgets = {
+            'veterinario': forms.Select(attrs={'class': 'form-control'}),
+            'ficha_cliente': forms.Select(attrs={'class': 'form-control'}),
+        }

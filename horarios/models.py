@@ -42,3 +42,4 @@ class Notificacion(models.Model):
         verbose_name_plural = "Notificaciones"
 
     def __str__(self): return f"Notificación de cita N°{self.cita}, para usuario N°{self.recepcionista}"
+

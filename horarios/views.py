@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from .forms import CitaForm
 from django.utils.timezone import localtime
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import calendar
 from .models import Cita, Notificacion
-from veterinarios.models import Veterinario, Recepcionista
+from veterinarios.models import Veterinario, Recepcionista, Horario
 from core.views import get_notificaciones
+from django.http import JsonResponse
 
 @login_required
 def horarios(req):
@@ -120,15 +120,33 @@ def ver_notificaciones(req):
 @login_required
 def registrar_cita(req):
     cita_form = CitaForm()
+    
     if req.method == "POST":
-        cita_form = CitaForm(data = req.POST)
+        cita_form = CitaForm(data=req.POST)
+
         if cita_form.is_valid():
-            cita = cita_form.save()
+
+            # Traer el bloque enviado desde el select
+            bloque = req.POST.get("hora_inicial")
+
+            # Crear la cita manualmente
+            cita = Cita.objects.create(
+                fecha=cita_form.cleaned_data["fecha"],
+                hora_inicial=int(bloque),
+                veterinario=cita_form.cleaned_data["veterinario"],
+                ficha_cliente=cita_form.cleaned_data["ficha_cliente"],
+                estado="pendiente"
+            )
+
+            # Notificaciones por si cancelan
             if cita.estado == "cancelado":
                 for recepcionista in Recepcionista.objects.all():
-                    nueva_notificacion = Notificacion.objects.create(recepcionista = recepcionista, cita = cita, chequeado = False)
-                    nueva_notificacion.save()
-                print(f"Guardada notificación para {cita}")
+                    Notificacion.objects.create(
+                        recepcionista=recepcionista,
+                        cita=cita,
+                        chequeado=False
+                    )
+
             return redirect(reverse('registrar_cita') + '?ok')
 
     return render(req, 'horarios/crear_cita.html', {"form": cita_form})
@@ -162,3 +180,61 @@ def vet_confirmar(req):
         vet = get_object_or_404(Veterinario, id= vet_id)
         return redirect(reverse("registrar_cita", f'?vet={vet.id}'))
     return render(req, 'horarios/vet_confirmar.html', {"veterinarios": veterinarios})
+
+def convertir_bloque_a_hora(bloque):
+    base = datetime(2000, 1, 1, 8, 0)  # da igual el día
+    hora = base + timedelta(minutes=(bloque - 1) * 30)
+    return hora.strftime("%H:%M")
+
+def horas_disponibles(request):
+    vet_id = request.GET.get('veterinario')
+    fecha_str = request.GET.get('fecha')
+
+    if not vet_id or not fecha_str:
+        return JsonResponse({'horas': []})
+
+    try:
+        fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
+    except Exception:
+        return JsonResponse({'horas': []})
+
+    dia_semana = fecha.strftime("%A").lower()
+
+    mapa_dias = {
+        'monday': 'lunes',
+        'tuesday': 'martes',
+        'wednesday': 'miercoles',
+        'thursday': 'jueves',
+        'friday': 'viernes',
+        'saturday': 'sabado',
+        'sunday': 'domingo',
+    }
+
+    dia_json = mapa_dias.get(dia_semana)
+    if not dia_json:
+        return JsonResponse({'horas': []})
+
+    try:
+        horario = Horario.objects.get(veterinario_id=vet_id)
+    except Horario.DoesNotExist:
+        return JsonResponse({'horas': []})
+
+    bloques = getattr(horario, dia_json, None)
+    if not isinstance(bloques, dict):
+        return JsonResponse({'horas': []})
+
+    citas = Cita.objects.filter(veterinario_id=vet_id, fecha=fecha)
+    ocupados = {c.hora_inicial for c in citas}
+
+    horas = []
+    for key, value in bloques.items():
+        if value:
+            try:
+                numero = int(key.replace("bloque", ""))
+            except Exception:
+                continue
+            if numero not in ocupados:
+                hora_real = convertir_bloque_a_hora(numero)
+                horas.append({"id": numero, "texto": hora_real})
+
+    return JsonResponse({'horas': horas})

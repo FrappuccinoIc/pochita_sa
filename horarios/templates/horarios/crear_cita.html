@@ -16,6 +16,14 @@
             {% csrf_token %}
             {{ form|crispy }}
 
+            <!-- CONTENEDOR DE HORAS DISPONIBLES -->
+            <div id="hora_container" class="mb-3">
+                <label for="id_hora_inicial" class="form-label">Hora disponible</label>
+                <select id="id_hora_inicial" name="hora_inicial" class="form-control">
+                    <option value="">Selecciona veterinario y fecha</option>
+                </select>
+            </div>
+
             <button class="btn btn-primary" type="submit">Enviar</button>
         </form>
 
@@ -30,24 +38,84 @@
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"></script>
 
 <script>
 $(function() {
-    // Bloquea escritura manual
-    $('#id_fecha').attr('readonly', true);
+    // Referencia jQuery al input con name='fecha' (funciona aunque crispy cambie el id)
+    const $fecha = $("input[name='fecha']");
+    const $vet = $("#id_veterinario");
+    const $selectHora = $("#id_hora_inicial");
 
-    $('#id_fecha').datepicker({
+    // Si no existen los elementos, abortar y loggear para depurar
+    if ($fecha.length === 0) {
+        console.warn("No se encontró input[name='fecha'] en el formulario.");
+        return;
+    }
+    if ($vet.length === 0) {
+        console.warn("No se encontró #id_veterinario en el formulario.");
+        return;
+    }
+    if ($selectHora.length === 0) {
+        console.warn("No se encontró #id_hora_inicial en el formulario.");
+        return;
+    }
+
+    // Hacer readonly para evitar tipeo manual
+    $fecha.prop('readonly', true);
+
+    // Inicializar datepicker sobre el input encontrado
+    $fecha.datepicker({
         format: 'dd/mm/yyyy',
         language: 'es',
         autoclose: true,
         todayHighlight: true,
         startDate: new Date()
     });
+
+    function cargarHoras() {
+        const vet = $vet.val();
+        const fecha = $fecha.val();
+
+        if (!vet || !fecha) {
+            $selectHora.html('<option value="">Selecciona veterinario y fecha</option>');
+            return;
+        }
+
+        // URL EXACTA: debe coincidir con la ruta que pusimos en urls.py
+        $.get("/horarios/horas_disponibles/", { veterinario: vet, fecha: fecha })
+            .done(function(data) {
+                let opciones = "";
+
+                if (!data || !Array.isArray(data.horas) || data.horas.length === 0) {
+                    opciones = '<option value="">Sin horas disponibles</option>';
+                } else {
+                    opciones = '<option value="">Selecciona una hora</option>';
+                    data.horas.forEach(function(h) {
+                        opciones += `<option value="${h.id}">${h.texto}</option>`;
+                    });
+                }
+
+                $selectHora.html(opciones);
+            })
+            .fail(function(jqXHR, textStatus, err) {
+                console.error("Error al pedir horas disponibles:", textStatus, err);
+                $selectHora.html('<option value="">Error al obtener horarios</option>');
+            });
+    }
+
+    // Disparadores
+    $vet.on('change', cargarHoras);
+    $fecha.on('change', cargarHoras);
+
+    // Si la página cargó con valores (ej: ?vet=2 en la URL), intenta cargar
+    if ($vet.val() && $fecha.val()) {
+        cargarHoras();
+    }
 });
 </script>
+
+
 
 {% endblock %}

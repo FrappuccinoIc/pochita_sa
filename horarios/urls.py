@@ -8,5 +8,7 @@ urlpatterns = [
     path('notificaciones/', views.ver_notificaciones, name = "notificaciones"),
     path('<int:veterinario_id>/', views.vet_disponibilidad, name = "disponibilidad_vet"),
     path('eliminar/<int:cita_id>/', views.eliminar_cita, name="eliminar_cita"),
-    path('restringido/', views.restringido, name="restringido")
+    path('restringido/', views.restringido, name="restringido"),
+    path('api/horas-disponibles/', views.horas_disponibles, name='horas_disponibles')
+
 ]

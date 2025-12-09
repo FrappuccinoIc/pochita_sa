@@ -6,10 +6,15 @@ class RecepcionistaAdmin(admin.ModelAdmin):
     ordering=('created', 'nombre', 'usuario')
     search_fields=('nombre', '')
 
+class HorarioInline(admin.StackedInline):
+    model = Horario
+    extra = 0
+
 class VeterinarioAdmin(admin.ModelAdmin):
     list_display=('nombre', 'usuario', 'created')
     ordering=('created', 'nombre', 'usuario')
     search_fields=('nombre', '')
+    inlines = [HorarioInline]
 
 class HorarioAdmin(admin.ModelAdmin):
     list_display=('veterinario', 'updated')
