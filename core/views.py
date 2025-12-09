@@ -11,7 +11,7 @@ def get_notificaciones(req):
     except: recepcionista = False
     if not recepcionista:
         return 0
-    notificaciones = Notificacion.objects.filter(recepcionista__usuario__id = user_id)
+    notificaciones = Notificacion.objects.filter(recepcionista__usuario__id = user_id, chequeado = False)
     return {"num": len(notificaciones), "es_recepcionista": recepcionista}
 
 @login_required

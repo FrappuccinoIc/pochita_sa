@@ -112,7 +112,7 @@ def ver_notificaciones(req):
     except: 
         return redirect("restringido")
 
-    lista_citas_notificaciones = Notificacion.objects.filter(recepcionista__usuario__id = req.user.id).values_list('cita__id', flat=True)
+    lista_citas_notificaciones = Notificacion.objects.filter(recepcionista__usuario__id = req.user.id, chequeado = False).values_list('cita__id', flat=True)
 
     if(veterinario): citas = Cita.objects.filter(fecha__range = (fecha_min, fecha_max), estado = "cancelado", veterinario__id = veterinario, id__in = lista_citas_notificaciones).order_by('fecha')
     else: citas = Cita.objects.filter(fecha__range = (fecha_min, fecha_max), estado = "cancelado", id__in = lista_citas_notificaciones).order_by('fecha')
@@ -125,7 +125,7 @@ def ver_notificaciones(req):
         'fecha_min': fecha_min,
         'fecha_max': fecha_ult_dia_sig_mes,
         'veterinarios': veterinarios,
-        'notificaciones': notificaciones
+        'notifs': notificaciones
     })
 
 @login_required

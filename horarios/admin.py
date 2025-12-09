@@ -19,7 +19,7 @@ class CitaAdmin(admin.ModelAdmin):
     get_nombre_veterinario.short_description = 'Nombre Veterinario'
 
 class NotificacionAdmin(admin.ModelAdmin):
-    list_display=('get_username_recepcionista', 'get_cita_veterinario', 'get_cita_mascota', 'created')
+    list_display=('get_username_recepcionista', 'get_cita_veterinario', 'get_cita_mascota', 'created', 'chequeado')
 
     def get_username_recepcionista(self, obj): return obj.recepcionista.usuario
 
