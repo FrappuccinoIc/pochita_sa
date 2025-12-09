@@ -27,34 +27,46 @@ def horarios(req):
 
     # Restricción de fecha
     try:
-        fecha_str = req.GET.get('fecha', None)
-        fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
-
-        # Aquí se aplica la restricción
-        if fecha < hoy:
-            fecha = hoy
-
+        fecha_min_str = req.GET.get('fecha-min', None)
+        fecha_min = datetime.strptime(fecha_min_str, "%d/%m/%Y").date()
+        if fecha_min < hoy: fecha_min = hoy
     except:
-        fecha = date(hoy.year, hoy.month, 1)
+        fecha_min = date(hoy.year, hoy.month, 1)
 
+    fecha_ult_dia_sig_mes = date(hoy.year, hoy.month, 1) + relativedelta(months=1)
+    fecha_ult_dia_sig_mes = date(
+        fecha_ult_dia_sig_mes.year,
+        fecha_ult_dia_sig_mes.month,
+        calendar.monthrange(fecha_ult_dia_sig_mes.year, fecha_ult_dia_sig_mes.month)[1]
+    )
+
+    try:
+        fecha_max_str = req.GET.get('fecha-max', None)
+        fecha_max = datetime.strptime(fecha_max_str, "%d/%m/%Y").date()
+        if fecha_max > fecha_ult_dia_sig_mes: fecha_max = fecha_ult_dia_sig_mes
+    except:
+        fecha_max = fecha_ult_dia_sig_mes
+        
     # Límite superior: último día del mes siguiente
-    fecha_max = fecha + relativedelta(months=1)
+    """ fecha_max = fecha + relativedelta(months=1)
     fecha_max = date(
         fecha_max.year,
         fecha_max.month,
         calendar.monthrange(fecha_max.year, fecha_max.month)[1]
-    )
+    ) """
+
+    print(fecha_min, fecha_max)
 
     # Filtro
     if veterinario:
         citas = Cita.objects.filter(
-            fecha__range=(fecha, fecha_max),
+            fecha__range=(fecha_min, fecha_max),
             estado=estado,
             veterinario__id=veterinario
         ).order_by('fecha')
     else:
         citas = Cita.objects.filter(
-            fecha__range=(fecha, fecha_max),
+            fecha__range=(fecha_min, fecha_max),
             estado=estado
         ).order_by('fecha')
 
@@ -70,7 +82,7 @@ def horarios(req):
     return render(req, 'horarios/horario.html', {
         'citas': citas,
         'fecha_min': hoy,   # Establece limite de fecha, hoy
-        'fecha_max': fecha_max,
+        'fecha_max': fecha_ult_dia_sig_mes,
         'veterinarios': veterinarios,
         'vet_loggeado': vet_loggeado,
         'notificaciones': notificaciones
