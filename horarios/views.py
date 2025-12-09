@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponse
 from django.urls import reverse
 from .forms import CitaForm
 from django.utils.timezone import localtime
@@ -123,16 +123,13 @@ def registrar_cita(req):
     
     if req.method == "POST":
         cita_form = CitaForm(data=req.POST)
-
+        print(cita_form.cleaned_data['hora_inicial'], type(cita_form.cleaned_data['hora_inicial']))
         if cita_form.is_valid():
-
-            # Traer el bloque enviado desde el select
-            bloque = req.POST.get("hora_inicial")
 
             # Crear la cita manualmente
             cita = Cita.objects.create(
                 fecha=cita_form.cleaned_data["fecha"],
-                hora_inicial=int(bloque),
+                hora_inicial=int(cita_form.cleaned_data['hora_inicial']),
                 veterinario=cita_form.cleaned_data["veterinario"],
                 ficha_cliente=cita_form.cleaned_data["ficha_cliente"],
                 estado="pendiente"
@@ -150,6 +147,31 @@ def registrar_cita(req):
             return redirect(reverse('registrar_cita') + '?ok')
 
     return render(req, 'horarios/crear_cita.html', {"form": cita_form})
+
+@login_required
+def filtrar_horas(req):
+    html = "<option value="">Selecciona veterinario y fecha</option>"
+    veterinario_id = req.GET.get('veterinario')
+    fecha_str = req.GET.get('fecha')
+    if veterinario_id == "" or fecha_str == "": return HttpResponse(html)
+
+    fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
+    dias = ['lunes', 'martes', 'miercoles', 'jueves','viernes', 'sabado','domingo']
+    try:
+        horario = Horario.objects.get(veterinario__id = veterinario_id)
+
+        horario_dia = getattr(horario, dias[fecha.weekday()])
+        i = 1
+        for bloque_activo in horario_dia.values():
+            if i == 16: break
+            print(i, bloque_activo)
+            if bloque_activo:
+                html += f"<option value='{i}'>{convertir_bloque_a_hora(i)}</option>"
+            i += 1
+        print(html)
+    except:
+        pass
+    return HttpResponse(html)
 
 @login_required
 def vet_disponibilidad(req):
@@ -182,59 +204,6 @@ def vet_confirmar(req):
     return render(req, 'horarios/vet_confirmar.html', {"veterinarios": veterinarios})
 
 def convertir_bloque_a_hora(bloque):
-    base = datetime(2000, 1, 1, 8, 0)  # da igual el día
+    base = datetime(2000, 1, 1, 8, 0)
     hora = base + timedelta(minutes=(bloque - 1) * 30)
     return hora.strftime("%H:%M")
-
-def horas_disponibles(request):
-    vet_id = request.GET.get('veterinario')
-    fecha_str = request.GET.get('fecha')
-
-    if not vet_id or not fecha_str:
-        return JsonResponse({'horas': []})
-
-    try:
-        fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
-    except Exception:
-        return JsonResponse({'horas': []})
-
-    dia_semana = fecha.strftime("%A").lower()
-
-    mapa_dias = {
-        'monday': 'lunes',
-        'tuesday': 'martes',
-        'wednesday': 'miercoles',
-        'thursday': 'jueves',
-        'friday': 'viernes',
-        'saturday': 'sabado',
-        'sunday': 'domingo',
-    }
-
-    dia_json = mapa_dias.get(dia_semana)
-    if not dia_json:
-        return JsonResponse({'horas': []})
-
-    try:
-        horario = Horario.objects.get(veterinario_id=vet_id)
-    except Horario.DoesNotExist:
-        return JsonResponse({'horas': []})
-
-    bloques = getattr(horario, dia_json, None)
-    if not isinstance(bloques, dict):
-        return JsonResponse({'horas': []})
-
-    citas = Cita.objects.filter(veterinario_id=vet_id, fecha=fecha)
-    ocupados = {c.hora_inicial for c in citas}
-
-    horas = []
-    for key, value in bloques.items():
-        if value:
-            try:
-                numero = int(key.replace("bloque", ""))
-            except Exception:
-                continue
-            if numero not in ocupados:
-                hora_real = convertir_bloque_a_hora(numero)
-                horas.append({"id": numero, "texto": hora_real})
-
-    return JsonResponse({'horas': horas})

@@ -16,14 +16,6 @@
             {% csrf_token %}
             {{ form|crispy }}
 
-            <!-- CONTENEDOR DE HORAS DISPONIBLES -->
-            <div id="hora_container" class="mb-3">
-                <label for="id_hora_inicial" class="form-label">Hora disponible</label>
-                <select id="id_hora_inicial" name="hora_inicial" class="form-control">
-                    <option value="">Selecciona veterinario y fecha</option>
-                </select>
-            </div>
-
             <button class="btn btn-primary" type="submit">Enviar</button>
         </form>
 
@@ -31,7 +23,10 @@
             <button class="btn btn-secondary mt-2">Volver Atrás</button>
         </a>
     </div>
-</div>
+    
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+</div>  
 
 <!-- jQuery + Bootstrap Datepicker -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -73,46 +68,6 @@ $(function() {
         todayHighlight: true,
         startDate: new Date()
     });
-
-    function cargarHoras() {
-        const vet = $vet.val();
-        const fecha = $fecha.val();
-
-        if (!vet || !fecha) {
-            $selectHora.html('<option value="">Selecciona veterinario y fecha</option>');
-            return;
-        }
-
-        // URL EXACTA: debe coincidir con la ruta que pusimos en urls.py
-        $.get("/horarios/horas_disponibles/", { veterinario: vet, fecha: fecha })
-            .done(function(data) {
-                let opciones = "";
-
-                if (!data || !Array.isArray(data.horas) || data.horas.length === 0) {
-                    opciones = '<option value="">Sin horas disponibles</option>';
-                } else {
-                    opciones = '<option value="">Selecciona una hora</option>';
-                    data.horas.forEach(function(h) {
-                        opciones += `<option value="${h.id}">${h.texto}</option>`;
-                    });
-                }
-
-                $selectHora.html(opciones);
-            })
-            .fail(function(jqXHR, textStatus, err) {
-                console.error("Error al pedir horas disponibles:", textStatus, err);
-                $selectHora.html('<option value="">Error al obtener horarios</option>');
-            });
-    }
-
-    // Disparadores
-    $vet.on('change', cargarHoras);
-    $fecha.on('change', cargarHoras);
-
-    // Si la página cargó con valores (ej: ?vet=2 en la URL), intenta cargar
-    if ($vet.val() && $fecha.val()) {
-        cargarHoras();
-    }
 });
 </script>
 
